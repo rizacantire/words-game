@@ -8,37 +8,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Değişkenleri ve Tema Ayarları */
+        /* CSS Değişkenleri ve Tema Ayarları (tahmin_oyunu.html ve dogru_yanlis_oyunu.html'den kopyalandı) */
         :root {
-            --bg-color: #f0f4f8;
-            --container-bg: #ffffff;
-            --text-color-dark: #1f2937; /* gray-800 */
-            --text-color-medium: #4b5563; /* gray-700 */
-            --text-color-light: #6b7280; /* gray-600 */
-            --border-color: #e5e7eb; /* gray-200 */
-            --input-border: #d1d5db; /* gray-300 */
-            --input-focus-border: #3b82f6; /* blue-500 */
-            --blue-50-bg: #eff6ff; /* blue-50 */
-            --yellow-50-bg: #fffbeb; /* yellow-50 */
-            --red-100-bg: #fee2e2; /* red-100 */
-            --red-700-text: #b91c1c; /* red-700 */
-            --blue-100-bg: #dbeafe; /* blue-100 */
-            --blue-500-border: #3b82f6; /* blue-500 */
-            --blue-700-text: #1d4ed8; /* blue-700 */
-            --green-600-text: #16a34a; /* green-600 */
-            --red-600-text: #dc2626; /* red-600 */
-            --yellow-600-text: #eab308; /* yellow-600 */
-            --purple-500-bg: #a855f7; /* purple-500 */
-            --purple-700-bg: #7e22ce; /* purple-700 */
-            --green-500-bg: #22c55e; /* green-500 */
-            --green-700-bg: #15803d; /* green-700 */
-            --gray-200-bg: #e5e7eb; /* gray-200 */
-            --gray-300-bg: #d1d5db; /* gray-300 */
-            --gray-800-text: #1f2937; /* gray-800 */
-            --gray-100-bg: #f3f4f6; /* gray-100 */
-            --gray-500-text: #6b7280; /* gray-500 */
-            --gray-50-bg: #f9fafb; /* gray-50 */
-            --blue-600-text: #2563eb; /* blue-600 */
+            /* Aydınlık Mod Renkleri */
+            --bg-color: #f0f4f8; /* Dış arka plan */
+            --container-bg: #ffffff; /* Ana içerik kutusu arka planı */
+            --text-color-dark: #1f2937; /* Koyu metin (gray-800) */
+            --text-color-medium: #4b5563; /* Orta koyu metin (gray-700) */
+            --text-color-light: #6b7280; /* Açık metin (gray-600) */
+            --border-color: #e5e7eb; /* Kenarlık (gray-200) */
+            --input-border: #d1d5db; /* Input kenarlığı (gray-300) */
+            --input-focus-border: #3b82f6; /* Input odak kenarlığı (blue-500) */
+            --blue-50-bg: #eff6ff; /* Mavi arka plan (blue-50) */
+            --yellow-50-bg: #fffbeb; /* Sarı arka plan (yellow-50) */
+            --red-100-bg: #fee2e2; /* Kırmızı arka plan (red-100) */
+            --red-700-text: #b91c1c; /* Kırmızı metin (red-700) */
+            --blue-100-bg: #dbeafe; /* Mavi arka plan (blue-100) */
+            --blue-500-border: #3b82f6; /* Mavi kenarlık (blue-500) */
+            --blue-700-text: #1d4ed8; /* Mavi metin (blue-700) */
+            --green-600-text: #16a34a; /* Yeşil metin (green-600) */
+            --red-600-text: #dc2626; /* Kırmızı metin (red-600) */
+            --yellow-600-text: #eab308; /* Sarı metin (yellow-600) */
+            --purple-500-bg: #a855f7; /* Mor arka plan (purple-500) */
+            --purple-700-bg: #7e22ce; /* Koyu mor arka plan (purple-700) */
+            --green-500-bg: #22c55e; /* Yeşil arka plan (green-500) */
+            --green-700-bg: #15803d; /* Koyu yeşil arka plan (green-700) */
+            --gray-200-bg: #e5e7eb; /* Gri arka plan (gray-200) */
+            --gray-300-bg: #d1d5db; /* Koyu gri arka plan (gray-300) */
+            --gray-800-text: #1f2937; /* Koyu gri metin (gray-800) */
+            --gray-100-bg: #f3f4f6; /* Açık gri arka plan (gray-100) */
+            --gray-500-text: #6b7280; /* Gri metin (gray-500) */
+            --gray-50-bg: #f9fafb; /* Çok açık gri arka plan (gray-50) */
+            --blue-600-text: #2563eb; /* Mavi metin (blue-600) */
 
             /* Primary Button Gradients */
             --primary-gradient-start: #6EE7B7;
@@ -47,38 +48,55 @@
             --primary-gradient-hover-start: #34D399;
             --primary-gradient-hover-mid: #10B981;
             --primary-gradient-hover-end: #059669;
+
+            /* Seçenekler için aydınlık mod renkleri */
+            --option-bg-default: #e0f2fe; /* light blue-100 */
+            --option-text-default: #2563eb; /* blue-600 */
+            --option-bg-hover: #bfdbfe; /* blue-200 */
+            --option-bg-correct: #a7f3d0; /* green-200 */
+            --option-bg-incorrect: #fecaca; /* red-200 */
+            --option-text-feedback: #1f2937; /* gray-800 */
         }
 
         .dark {
-            --bg-color: #1a202c; /* dark gray */
-            --container-bg: #2d3748; /* darker gray */
-            --text-color-dark: #e2e8f0; /* light gray */
-            --text-color-medium: #cbd5e0; /* lighter gray */
-            --text-color-light: #a0aec0; /* even lighter gray */
-            --border-color: #4a5568; /* dark border */
+            /* Karanlık Mod Renkleri */
+            --bg-color: #1a202c; /* Koyu gri dış arka plan */
+            --container-bg: #2d3748; /* Koyu içerik kutusu arka planı */
+            --text-color-dark: #e2e8f0; /* Açık gri metin */
+            --text-color-medium: #cbd5e0; /* Daha açık gri metin */
+            --text-color-light: #a0aec0; /* En açık gri metin */
+            --border-color: #4a5568; /* Koyu kenarlık */
             --input-border: #4a5568;
-            --input-focus-border: #63b3ed; /* light blue */
-            --blue-50-bg: #2a4365; /* darker blue */
-            --yellow-50-bg: #433e2e; /* darker yellow */
-            --red-100-bg: #4a2d2d; /* darker red */
-            --red-700-text: #ef4444; /* brighter red */
-            --blue-100-bg: #2a4365;
-            --blue-500-border: #63b3ed;
-            --blue-700-text: #90cdf4;
-            --green-600-text: #68d391;
-            --red-600-text: #fc8181;
-            --yellow-600-text: #f6e05e;
-            --purple-500-bg: #9f7aea;
-            --purple-700-bg: #b794f4;
-            --green-500-bg: #48bb78;
-            --green-700-bg: #68d391;
-            --gray-200-bg: #4a5568;
-            --gray-300-bg: #6b7280;
-            --gray-800-text: #e2e8f0;
-            --gray-100-bg: #2d3748;
-            --gray-500-text: #a0aec0;
-            --gray-50-bg: #2d3748;
-            --blue-600-text: #63b3ed;
+            --input-focus-border: #63b3ed; /* Açık mavi odak kenarlığı */
+            --blue-50-bg: #2a4365; /* Koyu mavi-50 */
+            --yellow-50-bg: #433e2e; /* Koyu sarı-50 */
+            --red-100-bg: #4a2d2d; /* Koyu kırmızı-100 */
+            --red-700-text: #ef4444; /* Parlak kırmızı metin */
+            --blue-100-bg: #2a4365; /* Koyu mavi-100 */
+            --blue-500-border: #63b3ed; /* Açık mavi kenarlık */
+            --blue-700-text: #90cdf4; /* Açık mavi metin */
+            --green-600-text: #68d391; /* Açık yeşil metin */
+            --red-600-text: #fc8181; /* Açık kırmızı metin */
+            --yellow-600-text: #f6e05e; /* Açık sarı metin */
+            --purple-500-bg: #9f7aea; /* Açık mor */
+            --purple-700-bg: #b794f4; /* Daha açık mor */
+            --green-500-bg: #48bb78; /* Açık yeşil */
+            --green-700-bg: #68d391; /* Daha açık yeşil */
+            --gray-200-bg: #4a5568; /* Koyu gri-200 */
+            --gray-300-bg: #6b7280; /* Koyu gri-300 */
+            --gray-800-text: #e2e8f0; /* Açık gri metin */
+            --gray-100-bg: #2d3748; /* Koyu gri-100 */
+            --gray-500-text: #a0aec0; /* Açık gri-500 */
+            --gray-50-bg: #2d3748; /* Çok açık gri arka plan (gray-50) */
+            --blue-600-text: #63b3ed; /* Açık mavi metin */
+
+            /* Primary Button Gradients for Dark Mode */
+            --primary-gradient-start: #38a169;
+            --primary-gradient-mid: #2f855a;
+            --primary-gradient-end: #276749;
+            --primary-gradient-hover-start: #2f855a;
+            --primary-gradient-hover-mid: #276749;
+            --primary-gradient-hover-end: #1c4532;
 
             /* Seçenekler için karanlık mod renkleri */
             --option-bg-default: #3a5375; /* custom dark blue */
@@ -89,6 +107,7 @@
             --option-text-feedback: #ffffff;
         }
 
+        /* Genel HTML Element Stilleri */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
@@ -96,7 +115,9 @@
         }
         .container {
             background-color: var(--container-bg);
+            color: var(--text-color-dark);
         }
+        /* Tailwind sınıflarını CSS değişkenlerine bağlama */
         .text-gray-800 { color: var(--text-color-dark); }
         .text-gray-700 { color: var(--text-color-medium); }
         .text-gray-600 { color: var(--text-color-light); }
@@ -127,12 +148,13 @@
 
         /* Diğer Stil Kuralları */
         .button-primary {
-            background-image: linear-gradient(to right, #6EE7B7, #34D399, #10B981);
+            background-image: linear-gradient(to right, var(--primary-gradient-start), var(--primary-gradient-mid), var(--primary-gradient-end));
             transition: all 0.2s ease-in-out;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: white;
         }
         .button-primary:hover {
-            background-image: linear-gradient(to right, #34D399, #10B981, #059669);
+            background-image: linear-gradient(to right, var(--primary-gradient-hover-start), var(--primary-gradient-hover-mid), var(--primary-gradient-hover-end));
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
             transform: translateY(-2px);
         }
@@ -215,10 +237,75 @@
             color: var(--text-color-dark);
             text-decoration: none;
         }
+
+        /* Konumlandırma Düzeltmeleri */
+        .absolute.top-4.left-4 { /* Ana Menü butonu */
+            top: 1rem;
+            left: 1rem;
+        }
+        #user-info-display {
+            top: 1rem;
+            right: 1rem;
+            z-index: 50;
+        }
+        /* Tema değiştirme butonu konumlandırması tahmin_oyunu.html ile eşleşti */
+        #theme-toggle {
+            top: 1rem;
+            left: calc(1rem + 100px); /* Ana Menü butonunun sağında bir miktar boşluk */
+            z-index: 50;
+        }
+
+        /* Responsive ayarlamalar */
+        @media (max-width: 768px) { /* Tablet ve mobil cihazlar için */
+            .absolute.top-4.left-4 {
+                top: 0.5rem;
+                left: 0.5rem;
+                font-size: 0.65rem;
+                padding: 0.25rem 0.5rem;
+            }
+            #user-info-display {
+                top: 0.5rem;
+                right: 0.5rem;
+                font-size: 0.65rem;
+                padding: 0.25rem 0.5rem;
+            }
+            #theme-toggle {
+                top: 0.5rem;
+                left: calc(0.5rem + 80px); /* Mobil için daha küçük boşluk */
+                padding: 0.1rem 0.2rem;
+                font-size: 0.75rem;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+        @media (max-width: 480px) { /* Küçük mobil cihazlar için */
+            .absolute.top-4.left-4 {
+                top: 0.25rem;
+                left: 0.25rem;
+                font-size: 0.6rem;
+                padding: 0.1rem 0.3rem;
+            }
+            #user-info-display {
+                top: 0.25rem;
+                right: 0.25rem;
+                font-size: 0.6rem;
+                padding: 0.1rem 0.3rem;
+            }
+            #theme-toggle {
+                top: 0.25rem;
+                left: calc(0.25rem + 70px); /* Daha da küçük boşluk */
+                padding: 0.05rem 0.1rem;
+                font-size: 0.6rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
-    <div class="container bg-white p-8 rounded-xl shadow-lg flex flex-col items-center gap-6 relative">
+    <div class="container p-8 rounded-xl shadow-lg flex flex-col items-center gap-6 relative">
         <!-- Her zaman görünür Ana Menü butonu -->
         <a href="game_modes.html" class="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg text-sm shadow-md transition duration-200 ease-in-out z-50">
             Mod Seçimine Dön
@@ -231,7 +318,7 @@
         </div>
 
         <!-- Tema Değiştirme Butonu -->
-        <button id="theme-toggle" class="absolute top-4 right-28 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-3 rounded-full text-sm shadow-md transition duration-200 ease-in-out z-50" title="Temayı Değiştir">
+        <button id="theme-toggle" class="absolute top-4 left-28 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-3 rounded-full text-sm shadow-md transition duration-200 ease-in-out z-50" title="Temayı Değiştir">
             <!-- SVG icon JS tarafından yüklenecek -->
         </button>
 
@@ -584,6 +671,17 @@
         // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', () => {
             getGameParameters(); // URL'den oyun parametrelerini al
+            // Tema ayarını sayfa yüklendiğinde uygula
+            setTheme(localStorage.getItem('theme') || 'light');
+            // Tema değiştirme butonu ikonunu ayarla
+            if (themeToggleButton) {
+                if (localStorage.getItem('theme') === 'dark') {
+                    themeToggleButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.364l-1.591 1.591M21 12h-2.25m-.364 6.364l-1.591-1.591M12 18.75V21m-6.364-.364l1.591-1.591M3 12H5.25m-.364-6.364l1.591 1.591M12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>'; // Güneş ikonu
+                } else {
+                    themeToggleButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0112 21.75c-4.552 0-8.448-2.97-9.752-7.148A9.716 9.716 0 0112 2.25c4.552 0 8.448 2.97 9.752 7.148z" /></svg>'; // Ay ikonu
+                }
+            }
+
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     setTimeout(() => {
