@@ -1,5 +1,5 @@
 // shared.js
-// Bu dosya, tüm HTML sayfaları tarafından kullanılacak ortak fonksiyonları ve Firebase yapılandırmasını içerir.
+// Bu dosya, tüm HTML sayfaları tarafından kullanılacak ortak fonksiyonları, Firebase yapılandırmasını ve Tema yönetimini içerir.
 
 // Firebase Modülleri
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
@@ -32,6 +32,7 @@ const firebaseConfig = {
   appId: "1:877770240594:web:e20666cc1dbc335822658b",
   measurementId: "G-8GBGT2SNQR"
 };
+
 // Firebase Uygulamasını Başlat
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app); // Analytics başlatıldı
@@ -55,27 +56,23 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         userId = user.uid;
         userEmail = user.email || "Misafir Kullanıcı";
-        userDisplayText.textContent = `Giriş Yapan: ${userEmail}`;
-        signOutButton.classList.remove('hidden');
+        if (userDisplayText) userDisplayText.textContent = `Giriş Yapan: ${userEmail}`;
+        if (signOutButton) signOutButton.classList.remove('hidden');
         if (googleSigninButton) googleSigninButton.classList.add('hidden'); // Sadece varsa gizle
 
         // Ana menüdeki butonların görünürlüğünü güncelle
-        if (startGameModeButton) startGameModeButton.classList.remove('hidden');
+        if (startGameModeButton) startGameWordsModeButton.classList.remove('hidden');
         if (manageWordsModeButton) manageWordsModeButton.classList.remove('hidden');
 
         // Firestore koleksiyon referansını güncelle
         wordsCollectionRef = collection(db, `users/${userId}/words`);
         console.log("Firebase Auth State Changed: User logged in. userId:", userId);
 
-        // Her sayfada kendi onSnapshot dinleyicisini kurmak daha iyi bir yaklaşım olacaktır.
-        // Bu shared.js dosyasında genel bir onSnapshot tutmak yerine,
-        // her sayfa kendi DOM'una özel veri çekme ve güncelleme işlemini yapar.
-
     } else {
         userId = null;
         userEmail = null;
-        userDisplayText.textContent = "Giriş Yapılmadı";
-        signOutButton.classList.add('hidden');
+        if (userDisplayText) userDisplayText.textContent = "Giriş Yapılmadı";
+        if (signOutButton) signOutButton.classList.add('hidden');
         if (googleSigninButton) googleSigninButton.classList.remove('hidden'); // Sadece varsa göster
 
         // Ana menüdeki butonların görünürlüğünü güncelle
@@ -105,11 +102,9 @@ export function capitalizeFirstLetter(str, locale = 'tr-TR') {
  * @param {string} modalId Gösterilecek modalın ID'si.
  */
 export function showModal(modalId) {
-    console.log(`Attempting to show modal: ${modalId}`);
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'flex';
-        console.log(`Modal ${modalId} display set to flex.`);
     } else {
         console.warn(`Modal with ID ${modalId} not found.`);
     }
@@ -123,11 +118,7 @@ export function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'none';
-        if (modalId === 'edit-word-modal') {
-            // currentEditingDocId bu sayfaya özel olacak, burada sıfırlanmayacak
-        }
         if (modalId === 'confirm-modal') {
-            // confirmActionCallback bu sayfaya özel olacak, burada sıfırlanmayacak
             const confirmModalTitle = document.getElementById('confirm-modal-title');
             const confirmDetailsList = document.getElementById('confirm-details-list');
             if (confirmModalTitle) confirmModalTitle.textContent = 'Onay Gerekli';
@@ -158,7 +149,6 @@ export function displayError(message) {
 
 /**
  * Genel onay modalını gösterir.
- * Callback fonksiyonu bu modala özel olarak atanacak.
  * @param {string} message Ana onay mesajı.
  * @param {Function} callback Kullanıcı onayladığında çağrılacak fonksiyon (true/false döner).
  * @param {string} [title='Onay Gerekli'] Modal başlığı.
@@ -181,8 +171,6 @@ export function showConfirmModal(message, callback, title = 'Onay Gerekli', deta
     confirmModalTitle.textContent = title;
     confirmMessage.textContent = message;
 
-    // Callback'i global bir değişkene atamak yerine, doğrudan olay dinleyicilerinde kullanacağız
-    // Bu, shared.js'in daha temiz kalmasını sağlar ve her sayfanın kendi callback'ini yönetmesine izin verir.
     confirmYesButton.onclick = () => {
         closeModal('confirm-modal');
         callback(true);
@@ -210,6 +198,87 @@ export function showConfirmModal(message, callback, title = 'Onay Gerekli', deta
     showModal('confirm-modal');
 }
 
+// --- Tema Yönetimi Fonksiyonları ---
+
+/**
+ * Temayı ayarlar ve yerel depolamaya kaydeder.
+ * @param {string} theme 'light' veya 'dark'
+ */
+export function setTheme(theme) {
+    const htmlElement = document.documentElement;
+    if (theme === 'dark') {
+        htmlElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        htmlElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+    }
+    updateThemeToggleButton(); // Buton simgesini güncelle
+}
+
+/**
+ * Mevcut temayı değiştirir (aydınlık <-> karanlık).
+ */
+export function toggleTheme() {
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'dark') {
+        setTheme('light');
+    } else {
+        setTheme('dark');
+    }
+}
+
+/**
+ * Tema değiştirme butonunun simgesini ve tooltip'ini günceller.
+ */
+function updateThemeToggleButton() {
+    const themeToggleButton = document.getElementById('theme-toggle');
+    if (themeToggleButton) {
+        const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        if (currentTheme === 'dark') {
+            themeToggleButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h1M4 12H3m15.325 3.325l-.707.707M5.372 5.372l-.707-.707M18.628 5.372l.707-.707M5.372 18.628l-.707.707M12 18a6 6 0 110-12 6 6 0 010 12z" />
+                </svg>
+            `; // Güneş simgesi
+            themeToggleButton.title = "Aydınlık Moda Geç";
+        } else {
+            themeToggleButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            `; // Ay simgesi
+            themeToggleButton.title = "Karanlık Moda Geç";
+        }
+    }
+}
+
+// Sayfa yüklendiğinde temayı ayarla
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark'); // Sistem karanlık modu tercih ediyorsa
+    } else {
+        setTheme('light'); // Varsayılan olarak aydınlık mod
+    }
+
+    // Sistem tema tercihi değiştiğinde dinleyici ekle
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        // Eğer kullanıcı manuel bir tercih yapmadıysa, sistem tercihini takip et
+        if (!localStorage.getItem('theme')) {
+            setTheme(event.matches ? 'dark' : 'light');
+        }
+    });
+
+    // Tema değiştirme butonuna olay dinleyici ekle
+    const themeToggleButton = document.getElementById('theme-toggle');
+    if (themeToggleButton) {
+        themeToggleButton.addEventListener('click', toggleTheme);
+    }
+});
+
+
 // Firebase Firestore işlemleri için dışa aktarımlar
 export { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, getDocs, writeBatch, GoogleAuthProvider, signInWithPopup, signOut };
-
