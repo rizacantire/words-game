@@ -21,7 +21,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .button-primary:hover {
-            background-image: linear:gradient(to right, #34D399, #10B981, #059669);
+            background-image: linear-gradient(to right, #34D399, #10B981, #059669);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
             transform: translateY(-2px);
         }
@@ -113,13 +113,14 @@
                 </div>
             </div>
 
-            <!-- Kategori Seçimi -->
+            <!-- Kategori Seçimi (Select Box olarak güncellendi) -->
             <div class="w-full max-w-md mt-6 bg-gray-50 p-4 rounded-lg shadow-inner">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Kelime Türleri:</label>
-                <div id="category-selection-container" class="flex flex-wrap gap-x-4 gap-y-2 justify-center">
+                <label for="category-select" class="block text-gray-700 text-sm font-bold mb-2">Kelime Türleri (Çoklu Seçim):</label>
+                <select id="category-select" multiple
+                        class="form-multiselect block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 h-48 overflow-y-auto">
                     <!-- Kategoriler buraya JS ile yüklenecek -->
-                    <p class="text-gray-500 text-sm">Kategoriler yükleniyor...</p>
-                </div>
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Birden fazla seçim yapmak için Ctrl (Windows/Linux) veya Cmd (macOS) tuşuna basılı tutun.</p>
             </div>
         </div>
 
@@ -164,7 +165,7 @@
         const numWordsInput = document.getElementById('num-words-input');
         const wordCountError = document.getElementById('word-count-error');
         const gameDirectionRadios = document.querySelectorAll('input[name="gameDirection"]');
-        const categorySelectionContainer = document.getElementById('category-selection-container');
+        const categorySelect = document.getElementById('category-select'); // Yeni: Select kutusu
         const startTahminButton = document.getElementById('start-tahmin-button');
         const startSecmeliButton = document.getElementById('start-secmeli-button');
         const startDogruYanlisButton = document.getElementById('start-dogru-yanlis-button');
@@ -211,7 +212,7 @@
                 console.log("Firestore snapshot received in game_modes.html. Updating word list.");
                 const wordsFromDb = [];
                 allCategories.clear();
-                allCategories.add('Tümü');
+                allCategories.add('Tümü'); // "Tümü" seçeneğini her zaman ekle
 
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -221,7 +222,7 @@
                     }
                 });
                 allWords = wordsFromDb.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
-                renderCategorySelection();
+                renderCategorySelection(); // Kategorileri yeniden render et
                 updateStartButtonsState();
                 console.log("Firebase'den kelimeler güncellendi (game_modes.html):", allWords.length);
             }, (error) => {
@@ -231,22 +232,20 @@
         }
 
         // Kullanıcı kimliği değiştiğinde kelime dinleyicisini kur
-        // shared.js'deki onAuthStateChanged tetiklendiğinde bu fonksiyonu çağır
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // userId ve wordsCollectionRef shared.js tarafından ayarlandığında
-                // burada tekrar dinleyiciyi kurabiliriz.
-                // Küçük bir gecikme ekleyerek shared.js'in değişkenleri ayarlamasını bekleyelim.
                 setTimeout(() => {
                     if (wordsCollectionRef) {
                         setupWordsListener();
                     } else {
                         console.warn("wordsCollectionRef hala null, tekrar denenecek.");
-                        // Gerekirse daha fazla deneme veya hata mesajı eklenebilir
                     }
-                }, 500); // Yarım saniye bekleyelim
+                }, 500);
             } else {
                 allWords = [];
+                allCategories.clear();
+                allCategories.add('Tümü');
+                selectedCategories = ['Tümü']; // Kullanıcı çıkış yaptığında seçimi sıfırla
                 renderCategorySelection();
                 updateStartButtonsState();
             }
@@ -303,81 +302,56 @@
             );
         }
 
-        // Kategori Seçimi Oluşturma ve Yönetme
+        // Kategori Seçimi Oluşturma ve Yönetme (Select Box için güncellendi)
         function renderCategorySelection() {
-            categorySelectionContainer.innerHTML = ''; // Önceki kategori seçimlerini temizle
+            categorySelect.innerHTML = ''; // Önceki seçenekleri temizle
 
             // "Tümü" seçeneğini ekle
-            const allCheckboxDiv = document.createElement('div');
-            allCheckboxDiv.className = 'flex items-center';
-            const allInput = document.createElement('input');
-            allInput.type = 'checkbox';
-            allInput.id = 'category-all';
-            allInput.value = 'Tümü';
-            allInput.className = 'form-checkbox h-5 w-5 text-blue-600 rounded';
-            allInput.checked = selectedCategories.includes('Tümü');
-            allInput.addEventListener('change', (event) => {
-                if (event.target.checked) {
-                    selectedCategories = ['Tümü']; // "Tümü" seçilirse diğerlerini kaldır
-                    categorySelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                        if (cb.id !== 'category-all') {
-                            cb.checked = false;
-                        }
-                    });
-                } else {
-                    if (selectedCategories.length === 1 && selectedCategories.includes('Tümü')) {
-                         selectedCategories = [];
-                    }
-                }
-                updateStartButtonsState();
-                renderCategorySelection(); // UI'ı yeniden render et
-            });
-            const allLabel = document.createElement('label');
-            allLabel.htmlFor = 'category-all';
-            allLabel.className = 'ml-2 text-gray-700 font-medium cursor-pointer';
-            allLabel.textContent = 'Tümü';
-            allCheckboxDiv.appendChild(allInput);
-            allCheckboxDiv.appendChild(allLabel);
-            categorySelectionContainer.appendChild(allCheckboxDiv);
+            const allOption = document.createElement('option');
+            allOption.value = 'Tümü';
+            allOption.textContent = 'Tümü';
+            categorySelect.appendChild(allOption);
 
             // Dinamik kategorileri ekle
             const sortedCategories = Array.from(allCategories).sort((a, b) => a.localeCompare(b, 'tr-TR'));
             sortedCategories.forEach(category => {
-                if (category === 'Tümü') return;
+                if (category === 'Tümü') return; // "Tümü" zaten eklendi
 
-                const checkboxDiv = document.createElement('div');
-                checkboxDiv.className = 'flex items-center';
-                const input = document.createElement('input');
-                input.type = 'checkbox';
-                input.id = `category-${category.replace(/\s+/g, '-')}`;
-                input.value = category;
-                input.className = 'form-checkbox h-5 w-5 text-blue-600 rounded';
-                input.checked = selectedCategories.includes(category);
-                input.addEventListener('change', (event) => {
-                    if (event.target.checked) {
-                        if (selectedCategories.includes('Tümü')) {
-                            selectedCategories = selectedCategories.filter(cat => cat !== 'Tümü');
-                            document.getElementById('category-all').checked = false;
-                        }
-                        selectedCategories.push(category);
-                    } else {
-                        selectedCategories = selectedCategories.filter(cat => cat !== category);
-                        if (selectedCategories.length === 0) {
-                            selectedCategories.push('Tümü');
-                            document.getElementById('category-all').checked = true;
-                        }
-                    }
-                    updateStartButtonsState();
-                });
-                const label = document.createElement('label');
-                label.htmlFor = `category-${category.replace(/\s+/g, '-')}`;
-                label.className = 'ml-2 text-gray-700 font-medium cursor-pointer';
-                label.textContent = capitalizeFirstLetter(category, 'tr-TR');
-                checkboxDiv.appendChild(input);
-                checkboxDiv.appendChild(label);
-                categorySelectionContainer.appendChild(checkboxDiv);
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = capitalizeFirstLetter(category, 'tr-TR');
+                categorySelect.appendChild(option);
+            });
+
+            // Seçili kategorileri select kutusunda işaretle
+            Array.from(categorySelect.options).forEach(option => {
+                option.selected = selectedCategories.includes(option.value);
             });
         }
+
+        // Category select kutusuna olay dinleyici
+        categorySelect.addEventListener('change', () => {
+            const currentSelections = Array.from(categorySelect.selectedOptions).map(option => option.value);
+
+            if (currentSelections.includes('Tümü')) {
+                // Eğer "Tümü" seçildiyse, sadece "Tümü" kalsın ve diğerlerini kaldır
+                selectedCategories = ['Tümü'];
+                Array.from(categorySelect.options).forEach(option => {
+                    option.selected = (option.value === 'Tümü');
+                });
+            } else if (currentSelections.length === 0 && allCategories.size > 0) {
+                // Eğer hiçbir şey seçili değilse (ve kategori varsa), "Tümü"nü otomatik seç
+                selectedCategories = ['Tümü'];
+                Array.from(categorySelect.options).forEach(option => {
+                    option.selected = (option.value === 'Tümü');
+                });
+            } else {
+                // Diğer durumlarda, seçilenleri güncelle
+                selectedCategories = currentSelections;
+            }
+            updateStartButtonsState();
+        });
+
 
         // Input ve radio butonlarına event listener'lar
         numWordsInput.addEventListener('input', updateStartButtonsState);
@@ -408,9 +382,9 @@
 
         // Sayfa yüklendiğinde ilk durumu ayarla
         document.addEventListener('DOMContentLoaded', () => {
-            // updateStartButtonsState shared.js'den gelen allWords'a bağlı olduğu için
-            // onAuthStateChanged tetiklendikten sonra çağrılmalı.
-            // Bu yüzden doğrudan burada çağırmak yerine onAuthStateChanged içinde tetikleniyor.
+            // shared.js'deki onAuthStateChanged tetiklendiğinde kelimeler yüklenecek ve
+            // ardından renderCategorySelection ve updateStartButtonsState çağrılacak.
+            // Bu kısım boş kalabilir.
         });
 
     </script>
