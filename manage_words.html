@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelimeleri Yönet</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS (xlsx) kütüphanesi CDN'den -->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Değişkenleri ve Tema Ayarları */
+        :root {
+            /* Aydınlık Mod Renkleri */
+            --bg-color: #f0f4f8; /* Dış arka plan */
+            --container-bg: #ffffff; /* Ana içerik kutusu arka planı */
+            --text-color-dark: #1f2937; /* Koyu metin (gray-800) */
+            --text-color-medium: #4b5563; /* Orta koyu metin (gray-700) */
+            --text-color-light: #6b7280; /* Açık metin (gray-600) */
+            --border-color: #e5e7eb; /* Kenarlık (gray-200) */
+            --input-border: #d1d5db; /* Input kenarlığı (gray-300) */
+            --input-focus-border: #3b82f6; /* Input odak kenarlığı (blue-500) */
+            --blue-50-bg: #eff6ff; /* Mavi arka plan (blue-50) */
+            --yellow-50-bg: #fffbeb; /* Sarı arka plan (yellow-50) */
+            --red-100-bg: #fee2e2; /* Kırmızı arka plan (red-100) */
+            --red-700-text: #b91c1c; /* Kırmızı metin (red-700) */
+            --blue-100-bg: #dbeafe; /* Mavi arka plan (blue-100) */
+            --blue-500-border: #3b82f6; /* Mavi kenarlık (blue-500) */
+            --blue-700-text: #1d4ed8; /* Mavi metin (blue-700) */
+            --green-600-text: #16a34a; /* Yeşil metin (green-600) */
+            --red-600-text: #dc2626; /* Kırmızı metin (red-600) */
+            --yellow-600-text: #eab308; /* Sarı metin (yellow-600) */
+            --purple-500-bg: #a855f7; /* Mor arka plan (purple-500) */
+            --purple-700-bg: #7e22ce; /* Koyu mor arka plan (purple-700) */
+            --green-500-bg: #22c55e; /* Yeşil arka plan (green-500) */
+            --green-700-bg: #15803d; /* Koyu yeşil arka plan (green-700) */
+            --gray-200-bg: #e5e7eb; /* Gri arka plan (gray-200) */
+            --gray-300-bg: #d1d5db; /* Koyu gri arka plan (gray-300) */
+            --gray-800-text: #1f2937; /* Koyu gri metin (gray-800) */
+            --gray-100-bg: #f3f4f6; /* Açık gri arka plan (gray-100) */
+            --gray-500-text: #6b7280; /* Gri metin (gray-500) */
+            --gray-50-bg: #f9fafb; /* Çok açık gri arka plan (gray-50) */
+            --blue-600-text: #2563eb; /* Mavi metin (blue-600) */
+
+            /* Primary Button Gradients */
+            --primary-gradient-start: #6EE7B7;
+            --primary-gradient-mid: #34D399;
+            --primary-gradient-end: #10B981;
+            --primary-gradient-hover-start: #34D399;
+            --primary-gradient-hover-mid: #10B981;
+            --primary-gradient-hover-end: #059669;
+        }
+
+        .dark {
+            /* Karanlık Mod Renkleri */
+            --bg-color: #1a202c; /* Koyu gri dış arka plan */
+            --container-bg: #2d3748; /* Koyu içerik kutusu arka planı */
+            --text-color-dark: #e2e8f0; /* Açık gri metin */
+            --text-color-medium: #cbd5e0; /* Daha açık gri metin */
+            --text-color-light: #a0aec0; /* En açık gri metin */
+            --border-color: #4a5568; /* Koyu kenarlık */
+            --input-border: #4a5568;
+            --input-focus-border: #63b3ed; /* Açık mavi odak kenarlığı */
+            --blue-50-bg: #2a4365; /* Koyu mavi-50 */
+            --yellow-50-bg: #433e2e; /* Koyu sarı-50 */
+            --red-100-bg: #4a2d2d; /* Koyu kırmızı-100 */
+            --red-700-text: #ef4444; /* Parlak kırmızı metin */
+            --blue-100-bg: #2a4365; /* Koyu mavi-100 */
+            --blue-500-border: #63b3ed; /* Açık mavi kenarlık */
+            --blue-700-text: #90cdf4; /* Açık mavi metin */
+            --green-600-text: #68d391; /* Açık yeşil metin */
+            --red-600-text: #fc8181; /* Açık kırmızı metin */
+            --yellow-600-text: #f6e05e; /* Açık sarı metin */
+            --purple-500-bg: #9f7aea; /* Açık mor */
+            --purple-700-bg: #b794f4; /* Daha açık mor */
+            --green-500-bg: #48bb78; /* Açık yeşil */
+            --green-700-bg: #68d391; /* Daha açık yeşil */
+            --gray-200-bg: #4a5568; /* Koyu gri-200 */
+            --gray-300-bg: #6b7280; /* Koyu gri-300 */
+            --gray-800-text: #e2e8f0; /* Açık gri metin */
+            --gray-100-bg: #2d3748; /* Koyu gri-100 */
+            --gray-500-text: #a0aec0; /* Açık gri-500 */
+            --gray-50-bg: #2d3748; /* Koyu gri-50 */
+            --blue-600-text: #63b3ed; /* Açık mavi metin */
+
+            /* Primary Button Gradients for Dark Mode */
+            --primary-gradient-start: #38a169;
+            --primary-gradient-mid: #2f855a;
+            --primary-gradient-end: #276749;
+            --primary-gradient-hover-start: #2f855a;
+            --primary-gradient-hover-mid: #276749;
+            --primary-gradient-hover-end: #1c4532;
+        }
+
+        /* Genel HTML Element Stilleri */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color-dark);
+        }
+        .container {
+            background-color: var(--container-bg);
+            color: var(--text-color-dark);
+        }
+
+        /* Tailwind sınıflarını CSS değişkenlerine bağlama */
+        .text-gray-800 { color: var(--text-color-dark); }
+        .text-gray-700 { color: var(--text-color-medium); }
+        .text-gray-600 { color: var(--text-color-light); }
+        .border-gray-200 { border-color: var(--border-color); }
+        .border-gray-300 { border-color: var(--input-border); }
+        .focus\:border-blue-500:focus { border-color: var(--input-focus-border); }
+        .bg-blue-50 { background-color: var(--blue-50-bg); }
+        .bg-yellow-50 { background-color: var(--yellow-50-bg); }
+        .bg-red-100 { background-color: var(--red-100-bg); }
+        .text-red-700 { color: var(--red-700-text); }
+        .bg-blue-100 { background-color: var(--blue-100-bg); }
+        .border-blue-500 { border-color: var(--blue-500-border); }
+        .text-blue-700 { color: var(--blue-700-text); }
+        .text-green-600 { color: var(--green-600-text); }
+        .text-red-600 { color: var(--red-600-text); }
+        .text-yellow-600 { color: var(--yellow-600-text); }
+        .bg-purple-500 { background-color: var(--purple-500-bg); }
+        .hover\:bg-purple-700:hover { background-color: var(--purple-700-bg); }
+        .bg-green-500 { background-color: var(--green-500-bg); }
+        .hover\:bg-green-700:hover { background-color: var(--green-700-bg); }
+        .bg-gray-200 { background-color: var(--gray-200-bg); }
+        .hover\:bg-gray-300:hover { background-color: var(--gray-300-bg); }
+        .text-gray-800 { color: var(--gray-800-text); }
+        .bg-gray-100 { background-color: var(--gray-100-bg); }
+        .text-gray-500 { color: var(--gray-500-text); }
+        .bg-gray-50 { background-color: var(--gray-50-bg); }
+        .text-blue-600 { color: var(--blue-600-text); }
+
+        /* Diğer Stil Kuralları */
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 2px dashed var(--blue-500-border);
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .custom-file-upload:hover {
+            background-color: var(--blue-100-bg);
+            border-color: var(--blue-600-text);
+        }
+        .button-primary {
+            background-image: linear-gradient(to right, var(--primary-gradient-start), var(--primary-gradient-mid), var(--primary-gradient-end));
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+        .button-primary:hover {
+            background-image: linear-gradient(to right, var(--primary-gradient-hover-start), var(--primary-gradient-hover-mid), var(--primary-gradient-hover-end));
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .button-secondary {
+            background-color: var(--gray-200-bg);
+            color: var(--text-color-medium);
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .button-secondary:hover {
+            background-color: var(--gray-300-bg);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        /* Modal Stilleri */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--container-bg);
+            color: var(--text-color-dark);
+            margin: auto;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+        .close-button {
+            color: var(--text-color-light);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--text-color-dark);
+            text-decoration: none;
+        }
+        /* Yeni Onay Modalı Stilleri */
+        #confirm-modal .modal-content, #duplicate-options-modal .modal-content {
+            width: 500px;
+        }
+        table {
+            color: var(--text-color-dark); /* Tablo metin rengi */
+        }
+        thead th {
+            background-color: var(--gray-50-bg); /* Tablo başlık arka planı */
+            color: var(--gray-500-text); /* Tablo başlık metin rengi */
+        }
+        tbody tr {
+            background-color: var(--container-bg); /* Tablo satır arka planı */
+        }
+        tbody tr:hover {
+            background-color: var(--gray-100-bg); /* Tablo satır hover arka planı */
+        }
+        .word-checkbox {
+            color: var(--blue-600-text); /* Checkbox rengi */
+        }
+        .text-blue-600 { color: var(--blue-600-text); }
+        .hover\:text-blue-900:hover { color: var(--input-focus-border); /* Koyu mavi hover */ }
+        .text-red-600 { color: var(--red-600-text); }
+        .hover\:text-red-900:hover { color: var(--red-700-text); /* Koyu kırmızı hover */ }
+
+        /* Konumlandırma Düzeltmeleri */
+        .absolute.top-4.left-4 { /* Ana Menü butonu */
+            top: 1rem;
+            left: 1rem;
+        }
+        #user-info-display {
+            top: 1rem;
+            right: 1rem;
+            z-index: 50;
+        }
+        #theme-toggle {
+            top: 1rem;
+            left: calc(1rem + 100px); /* Ana Menü butonunun sağında bir miktar boşluk */
+            z-index: 50;
+        }
+
+        /* Responsive ayarlamalar */
+        @media (max-width: 768px) { /* Tablet ve mobil cihazlar için */
+            .absolute.top-4.left-4 {
+                top: 0.5rem;
+                left: 0.5rem;
+                font-size: 0.65rem;
+                padding: 0.25rem 0.5rem;
+            }
+            #user-info-display {
+                top: 0.5rem;
+                right: 0.5rem;
+                font-size: 0.65rem;
+                padding: 0.25rem 0.5rem;
+            }
+            #theme-toggle {
+                top: 0.5rem;
+                left: calc(0.5rem + 80px); /* Mobil için daha küçük boşluk */
+                padding: 0.1rem 0.2rem;
+                font-size: 0.75rem;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+        @media (max-width: 480px) { /* Küçük mobil cihazlar için */
+            .absolute.top-4.left-4 {
+                top: 0.25rem;
+                left: 0.25rem;
+                font-size: 0.6rem;
+                padding: 0.1rem 0.3rem;
+            }
+            #user-info-display {
+                top: 0.25rem;
+                right: 0.25rem;
+                font-size: 0.6rem;
+                padding: 0.1rem 0.3rem;
+            }
+            #theme-toggle {
+                top: 0.25rem;
+                left: calc(0.25rem + 70px); /* Daha da küçük boşluk */
+                padding: 0.05rem 0.1rem;
+                font-size: 0.6rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container p-8 rounded-xl shadow-lg flex flex-col items-center gap-6 relative">
+        <!-- Her zaman görünür Ana Menü butonu -->
+        <a href="index.html" class="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg text-sm shadow-md transition duration-200 ease-in-out z-50">
+            Ana Menü
+        </a>
+
+        <!-- Kullanıcı Bilgisi ve Çıkış Butonu (Tüm sayfalarda ortak) -->
+        <div id="user-info-display" class="absolute top-4 right-4 text-xs text-gray-600 bg-gray-100 px-3 py-1 rounded-md shadow-sm flex items-center gap-2">
+            <span id="user-display-text">Yükleniyor...</span>
+            <button id="sign-out-button" class="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 text-xs hidden">Çıkış Yap</button>
+        </div>
+
+        <!-- Tema Değiştirme Butonu -->
+        <button id="theme-toggle" class="absolute top-4 left-28 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-3 rounded-full text-sm shadow-md transition duration-200 ease-in-out z-50" title="Temayı Değiştir">
+            <!-- SVG icon JS tarafından yüklenecek -->
+        </button>
+
+        <h1 class="text-4xl font-bold text-gray-800 mb-4 text-center">Kelimeleri Yönet</h1>
+
+        <!-- Yeni Kelime Ekle -->
+        <div class="p-6 rounded-lg w-full max-w-md shadow-md" style="background-color: var(--blue-50-bg);">
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">Yeni Kelime Ekle</h3>
+            <input type="text" id="add-italian-word" placeholder="İtalyanca Kelime" class="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            <input type="text" id="add-turkish-word" placeholder="Türkçe Karşılığı" class="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            <input type="text" id="add-word-type" placeholder="Kelime Türü (örn: Renkler, Sayılar)" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            <button id="add-word-button" class="button-primary w-full py-3 text-white font-bold rounded-lg">Kelime Ekle</button>
+        </div>
+
+        <!-- Excel Dosyasından Kelime Aktar -->
+        <div class="p-6 rounded-lg w-full max-w-md shadow-md mt-6" style="background-color: var(--yellow-50-bg);">
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">Excel Dosyasından Kelime Aktar</h3>
+            <p class="text-sm text-gray-600 mb-3">
+                Lütfen bilgisayarınızdan Excel dosyasını (.xlsx) seçin. Dosyanızın ilk satırında 'İtalyanca', 'Türkçe' ve isteğe bağlı olarak 'Tür' veya 'Category' sütun başlıkları olmalıdır.
+            </p>
+            <label for="excel-file-input" class="custom-file-upload w-full text-center text-gray-700 font-medium">
+                Dosya Seç...
+            </label>
+            <input type="file" id="excel-file-input" accept=".xlsx">
+            <p id="file-name-display" class="text-sm text-gray-500 mt-2"></p>
+            <button id="upload-excel-button" class="button-primary w-full py-3 text-white font-bold rounded-lg opacity-50 cursor-not-allowed" disabled>Excel'den Aktar</button>
+            <!-- Progress bar container -->
+            <div id="excel-progress-container" class="w-full bg-gray-200 rounded-full h-2.5 mt-4 hidden">
+                <div id="excel-progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+            <p id="excel-import-status" class="text-sm mt-3 text-center"></p>
+        </div>
+
+        <!-- Mevcut Kelimeler -->
+        <div class="w-full p-6 rounded-lg shadow-md mt-6" style="background-color: var(--container-bg);">
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">Mevcut Kelimeler (<span id="total-word-count">0</span>)</h3>
+            <div id="word-list-container" class="overflow-y-auto max-h-96 border border-gray-200 rounded-lg p-2">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="sticky top-0">
+                        <tr>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <input type="checkbox" id="select-all-words" class="form-checkbox h-4 w-4 text-blue-600 rounded">
+                            </th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İtalyanca</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Türkçe</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tür</th>
+                            <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="words-table-body" class="divide-y divide-gray-200">
+                        <!-- Kelimeler buraya JS ile yüklenecek -->
+                        <tr><td colspan="5" class="text-center py-4 text-gray-500">Henüz kelime yok. Yeni kelimeler ekleyin!</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Yeni Tekrarlayan Kelimeleri Temizle Butonu -->
+        <button id="remove-duplicates-button" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg text-lg mt-4 shadow-md transition duration-200 ease-in-out">
+            Tekrarlayan Kelimeleri Temizle
+        </button>
+        <!-- Kelimeleri Dışa Aktar Butonu -->
+        <button id="export-words-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg mt-4 shadow-md transition duration-200 ease-in-out">
+            Kelimeleri Dışa Aktar (Excel)
+        </button>
+        <!-- Seçilen Kelimeleri Sil Butonu -->
+        <button id="delete-selected-words-button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg text-lg mt-6 shadow-md transition duration-200 ease-in-out opacity-50 cursor-not-allowed" disabled>
+            Seçilenleri Sil
+        </button>
+    </div>
+
+    <!-- Modallar (Tüm sayfalarda ortak olarak bulunmalı) -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="window.closeModal('error-modal')">&times;</span>
+            <h2 class="text-3xl font-bold text-red-600 mb-4">Hata! 🚨</h2>
+            <p id="error-message" class="text-lg text-gray-700 mb-6"></p>
+            <button class="button-secondary px-6 py-3 text-gray-800 font-bold rounded-xl text-lg" onclick="window.closeModal('error-modal')">Tamam</button>
+        </div>
+    </div>
+
+    <!-- Düzenleme Modalı -->
+    <div id="edit-word-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="window.closeModal('edit-word-modal')">&times;</span>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Kelimeyi Düzenle</h2>
+            <input type="text" id="edit-italian-word" placeholder="İtalyanca Kelime" class="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            <input type="text" id="edit-turkish-word" placeholder="Türkçe Karşılığı" class="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            <input type="text" id="edit-word-type" placeholder="Kelime Türü (örn: Renkler, Sayılar)" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            <button id="save-edit-button" class="button-primary w-full py-3 text-white font-bold rounded-lg">Kaydet</button>
+            <button class="button-secondary w-full py-3 text-gray-800 font-bold rounded-lg mt-2" onclick="window.closeModal('edit-word-modal')">İptal</button>
+        </div>
+    </div>
+
+    <!-- Onay Modalı (Genel Kullanım ve Tekrarlayanları Silme İçin) -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="confirm-modal-title">Onay Gerekli</h2>
+            <p id="confirm-message" class="text-lg text-gray-700 mb-6"></p>
+            <div id="confirm-details-list" class="text-left text-gray-700 mb-6 max-h-48 overflow-y-auto hidden">
+                <!-- Detaylar buraya yüklenecek -->
+            </div>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-yes-button" class="button-primary px-6 py-3 text-white font-bold rounded-lg">Evet</button>
+                <button id="confirm-no-button" class="button-secondary px-6 py-3 text-gray-800 font-bold rounded-lg">Hayır</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tekrarlayanları Silme Seçenek Modalı -->
+    <div id="duplicate-options-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Tekrarlayan Kelimeleri Nasıl Kontrol Edelim?</h2>
+            <p class="text-lg text-gray-700 mb-6">Lütfen tekrarlayan kelimeleri hangi kritere göre aramak istediğinizi seçin:</p>
+            <div class="flex flex-col gap-4 mb-6">
+                <label class="inline-flex items-center">
+                    <input type="radio" name="duplicateCheckMode" value="both" class="form-radio text-blue-600" checked>
+                    <span class="ml-2 text-gray-700 font-medium">Hem İtalyanca Hem Türkçe Kelimeye Göre (Varsayılan)</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" name="duplicateCheckMode" value="italianOnly" class="form-radio text-blue-600">
+                    <span class="ml-2 text-gray-700 font-medium">Sadece İtalyanca Kelimeye Göre</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" name="duplicateCheckMode" value="turkishOnly" class="form-radio text-blue-600">
+                    <span class="ml-2 text-gray-700 font-medium">Sadece Türkçe Kelimeye Göre</span>
+                </label>
+            </div>
+            <button id="start-duplicate-check-button" class="button-primary px-6 py-3 text-white font-bold rounded-lg">Devam Et</button>
+            <button class="button-secondary px-6 py-3 text-gray-800 font-bold rounded-lg mt-2" onclick="window.closeModal('duplicate-options-modal')">İptal</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db, userId, wordsCollectionRef, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, getDocs, writeBatch, capitalizeFirstLetter, showModal, closeModal, displayError, showConfirmModal, signOut, setTheme, toggleTheme } from './shared.js';
+
+        // UI Elementleri
+        const signOutButton = document.getElementById('sign-out-button');
+        const addItalianWordInput = document.getElementById('add-italian-word');
+        const addTurkishWordInput = document.getElementById('add-turkish-word');
+        const addWordTypeInput = document.getElementById('add-word-type');
+        const addWordButton = document.getElementById('add-word-button');
+        const wordsTableBody = document.getElementById('words-table-body');
+        const totalWordCountSpan = document.getElementById('total-word-count');
+
+        // Excel Dosyası yükleme elementleri
+        const excelFileInput = document.getElementById('excel-file-input');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const uploadExcelButton = document.getElementById('upload-excel-button');
+        const excelImportStatus = document.getElementById('excel-import-status');
+        const excelProgressContainer = document.getElementById('excel-progress-container');
+        const excelProgressBar = document.getElementById('excel-progress-bar');
+
+        // Kelime Yönetimi Butonları
+        const deleteSelectedWordsButton = document.getElementById('delete-selected-words-button');
+        const removeDuplicatesButton = document.getElementById('remove-duplicates-button');
+        const exportWordsButton = document.getElementById('export-words-button');
+        const selectAllWordsCheckbox = document.getElementById('select-all-words');
+
+        // Düzenleme Modalı Elementleri
+        const editWordModal = document.getElementById('edit-word-modal');
+        const editItalianWordInput = document.getElementById('edit-italian-word');
+        const editTurkishWordInput = document.getElementById('edit-turkish-word');
+        const editWordTypeInput = document.getElementById('edit-word-type');
+        const saveEditButton = document.getElementById('save-edit-button');
+
+        // Tekrarlayanları Silme Modalı Elementleri
+        const duplicateOptionsModal = document.getElementById('duplicate-options-modal');
+        const duplicateCheckModeRadios = document.querySelectorAll('input[name="duplicateCheckMode"]');
+        const startDuplicateCheckButton = document.getElementById('start-duplicate-check-button');
+        const themeToggleButton = document.getElementById('theme-toggle'); // Tema butonu
+
+        // Global değişkenler
+        let allWords = [];
+        let currentEditingDocId = null;
+        let duplicateCheckMode = 'both';
+
+        // Window objesine ortak fonksiyonları ekle
+        window.showModal = showModal;
+        window.closeModal = closeModal;
+        window.displayError = displayError;
+        window.showConfirmModal = showConfirmModal;
+        window.setTheme = setTheme;
+        window.toggleTheme = toggleTheme;
+
+        // --- Çıkış Yapma ---
+        signOutButton.addEventListener('click', async () => {
+            showConfirmModal("Oturumu kapatmak istediğinizden emin misiniz?", async (confirmed) => {
+                if (confirmed) {
+                    try {
+                        await signOut(auth);
+                        console.log("Oturum kapatıldı.");
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.error("Çıkış yapma hatası:", error);
+                        displayError("Çıkış yapılırken bir hata oluştu: " + error.message);
+                    }
+                }
+            });
+        });
+
+        // Firebase'den kelimeleri dinle
+        function setupWordsListener() {
+            if (!userId) {
+                console.log("Kullanıcı kimliği mevcut değil, kelimeler dinlenemiyor.");
+                allWords = [];
+                renderWordsTable();
+                return;
+            }
+
+            onSnapshot(query(wordsCollectionRef), (snapshot) => {
+                console.log("Firestore snapshot received in manage_words.html. Updating word list.");
+                const wordsFromDb = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    wordsFromDb.push({ id: doc.id, ...data });
+                });
+                allWords = wordsFromDb.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
+                renderWordsTable();
+                console.log("Firebase'den kelimeler güncellendi (manage_words.html):", allWords.length);
+            }, (error) => {
+                console.error("Firebase kelimeleri dinlenirken hata oluştu (manage_words.html): ", error);
+                displayError("Veritabanı bağlantısında hata: " + error.message);
+            });
+        }
+
+        // Kullanıcı kimliği değiştiğinde kelime dinleyicisini kur
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                setTimeout(() => {
+                    if (wordsCollectionRef) {
+                        setupWordsListener();
+                    } else {
+                        console.warn("wordsCollectionRef hala null, tekrar denenecek.");
+                    }
+                }, 500);
+            } else {
+                displayError("Kelimeleri yönetmek için giriş yapmalısınız. Ana sayfaya yönlendiriliyorsunuz.");
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+            }
+        });
+
+        // Kelime zaten mevcut mu kontrol eder (büyük/küçük harf ve aksan duyarsız)
+        function isWordDuplicate(italian, turkish) {
+            return allWords.some(word =>
+                (word.italian || '').localeCompare(italian, undefined, { sensitivity: 'base' }) === 0 &&
+                (word.turkish || '').localeCompare(turkish, undefined, { sensitivity: 'base' }) === 0
+            );
+        }
+
+        // Yeni kelime ekler
+        addWordButton.addEventListener('click', async () => {
+            const italian = addItalianWordInput.value.trim();
+            const turkish = addTurkishWordInput.value.trim();
+            const type = addWordTypeInput.value.trim() || 'Genel';
+
+            if (!italian || !turkish) {
+                displayError("Lütfen hem İtalyanca hem de Türkçe kelime girin.");
+                return;
+            }
+
+            if (isWordDuplicate(italian, turkish)) {
+                displayError(`"${capitalizeFirstLetter(italian, 'it-IT')} - ${capitalizeFirstLetter(turkish, 'tr-TR')}" kelimesi zaten listede mevcut.`);
+                return;
+            }
+
+            try {
+                await addDoc(wordsCollectionRef, {
+                    italian: capitalizeFirstLetter(italian, 'it-IT'),
+                    turkish: capitalizeFirstLetter(turkish, 'tr-TR'),
+                    type: capitalizeFirstLetter(type, 'tr-TR'),
+                    timestamp: new Date()
+                });
+                addItalianWordInput.value = '';
+                addTurkishWordInput.value = '';
+                addWordTypeInput.value = '';
+                console.log("Kelime başarıyla eklendi (Firebase'e)!");
+            } catch (e) {
+                console.error("Kelime eklenirken hata oluştu: ", e);
+                displayError("Kelime eklenirken bir hata oluştu: " + e.message);
+            }
+        });
+
+        // Kelime listesini tabloya render eder
+        function renderWordsTable() {
+            wordsTableBody.innerHTML = '';
+            totalWordCountSpan.textContent = allWords.length;
+            selectAllWordsCheckbox.checked = false;
+
+            if (allWords.length === 0) {
+                wordsTableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">Henüz kelime yok. Yeni kelimeler ekleyin!</td></tr>';
+                updateDeleteSelectedButtonState();
+                return;
+            }
+
+            allWords.forEach(word => {
+                const row = wordsTableBody.insertRow();
+                row.className = 'hover:bg-gray-100';
+
+                const checkboxCell = row.insertCell();
+                checkboxCell.className = 'px-3 py-2 whitespace-nowrap text-sm text-gray-900';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'form-checkbox h-4 w-4 text-blue-600 rounded word-checkbox';
+                checkbox.dataset.id = word.id;
+                checkbox.addEventListener('change', updateSelectAllCheckboxState);
+                checkboxCell.appendChild(checkbox);
+
+                const italianCell = row.insertCell();
+                italianCell.className = 'px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900';
+                italianCell.textContent = capitalizeFirstLetter(word.italian || '', 'it-IT');
+
+                const turkishCell = row.insertCell();
+                turkishCell.className = 'px-3 py-2 whitespace-nowrap text-sm text-gray-500';
+                turkishCell.textContent = capitalizeFirstLetter(word.turkish || '', 'tr-TR');
+
+                const typeCell = row.insertCell();
+                typeCell.className = 'px-3 py-2 whitespace-nowrap text-sm text-gray-500';
+                typeCell.textContent = capitalizeFirstLetter(word.type || 'Belirtilmemiş', 'tr-TR');
+
+                const actionsCell = row.insertCell();
+                actionsCell.className = 'px-3 py-2 whitespace-nowrap text-right text-sm font-medium';
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Düzenle';
+                editButton.className = 'text-blue-600 hover:text-blue-900 mr-3';
+                editButton.onclick = () => openEditModal(word);
+                actionsCell.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Sil';
+                deleteButton.className = 'text-red-600 hover:text-red-900';
+                deleteButton.onclick = () => showConfirmModal(`"${capitalizeFirstLetter(word.italian || '', 'it-IT')}" kelimesini silmek istediğinizden emin misiniz?`, async (confirmed) => {
+                    if (confirmed) {
+                        await deleteWord(word.id);
+                    }
+                });
+                actionsCell.appendChild(deleteButton);
+            });
+            updateDeleteSelectedButtonState();
+        }
+
+        // "Tümünü Seç" onay kutusunun durumunu günceller
+        function updateSelectAllCheckboxState() {
+            const allCheckboxes = document.querySelectorAll('.word-checkbox');
+            const checkedCheckboxes = document.querySelectorAll('.word-checkbox:checked');
+
+            if (allCheckboxes.length === 0) {
+                selectAllWordsCheckbox.checked = false;
+                selectAllWordsCheckbox.indeterminate = false;
+            } else if (checkedCheckboxes.length === allCheckboxes.length) {
+                selectAllWordsCheckbox.checked = true;
+                selectAllWordsCheckbox.indeterminate = false;
+            } else if (checkedCheckboxes.length > 0) {
+                selectAllWordsCheckbox.checked = false;
+                selectAllWordsCheckbox.indeterminate = true;
+            } else {
+                selectAllWordsCheckbox.checked = false;
+                selectAllWordsCheckbox.indeterminate = false;
+            }
+            updateDeleteSelectedButtonState();
+        }
+
+        // "Tümünü Seç" onay kutusuna olay dinleyici
+        selectAllWordsCheckbox.addEventListener('change', (event) => {
+            const isChecked = event.target.checked;
+            document.querySelectorAll('.word-checkbox').forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            updateDeleteSelectedButtonState();
+        });
+
+        // "Seçilenleri Sil" butonunun durumunu günceller
+        function updateDeleteSelectedButtonState() {
+            const checkedCheckboxes = document.querySelectorAll('.word-checkbox:checked');
+            if (checkedCheckboxes.length > 0) {
+                deleteSelectedWordsButton.disabled = false;
+                deleteSelectedWordsButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                deleteSelectedWordsButton.disabled = true;
+                deleteSelectedWordsButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Düzenleme modalını açar ve mevcut kelime verilerini yükler
+        function openEditModal(word) {
+            currentEditingDocId = word.id;
+            editItalianWordInput.value = word.italian;
+            editTurkishWordInput.value = word.turkish;
+            editWordTypeInput.value = word.type || '';
+            showModal('edit-word-modal');
+        }
+
+        // Kelimeyi günceller (düzenleme modalından)
+        saveEditButton.addEventListener('click', async () => {
+            const italian = editItalianWordInput.value.trim();
+            const turkish = editTurkishWordInput.value.trim();
+            const type = editWordTypeInput.value.trim() || 'Genel';
+
+            if (!italian || !turkish) {
+                displayError("Lütfen hem İtalyanca hem de Türkçe kelime girin.");
+                return;
+            }
+            if (!currentEditingDocId) {
+                displayError("Düzenlenecek kelime bulunamadı. Lütfen tekrar deneyin.");
+                return;
+            }
+
+            const existingWord = allWords.find(word => word.id === currentEditingDocId);
+            if (existingWord && (existingWord.italian.localeCompare(italian, undefined, { sensitivity: 'base' }) !== 0 || existingWord.turkish.localeCompare(turkish, undefined, { sensitivity: 'base' }) !== 0)) {
+                if (isWordDuplicate(italian, turkish)) {
+                    displayError(`"${capitalizeFirstLetter(italian, 'it-IT')} - ${capitalizeFirstLetter(turkish, 'tr-TR')}" kelimesi zaten listede mevcut.`);
+                    return;
+                }
+            }
+
+            try {
+                const wordDocRef = doc(db, `users/${userId}/words`, currentEditingDocId);
+                await updateDoc(wordDocRef, {
+                    italian: capitalizeFirstLetter(italian, 'it-IT'),
+                    turkish: capitalizeFirstLetter(turkish, 'tr-TR'),
+                    type: capitalizeFirstLetter(type, 'tr-TR')
+                });
+                console.log("Kelime başarıyla güncellendi (Firebase'de)!");
+                closeModal('edit-word-modal');
+            } catch (e) {
+                console.error("Kelime güncellenirken hata oluştu: ", e);
+                displayError("Kelime güncellenirken bir hata oluştu: " + e.message);
+            }
+        });
+
+        // Kelimeyi siler (tekil silme)
+        async function deleteWord(id) {
+            try {
+                const wordDocRef = doc(db, `users/${userId}/words`, id);
+                await deleteDoc(wordDocRef);
+                console.log("Kelime başarıyla silindi (Firebase'den)!");
+            } catch (e) {
+                console.error("Kelime silinirken hata oluştu: ", e);
+                displayError("Kelime silinirken bir hata oluştu: " + e.message);
+            }
+        }
+
+        // --- Excel Dosyasından Kelime Aktarma ---
+        excelFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                fileNameDisplay.textContent = `Seçilen Dosya: ${file.name}`;
+                uploadExcelButton.disabled = false;
+                uploadExcelButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                fileNameDisplay.textContent = '';
+                uploadExcelButton.disabled = true;
+                uploadExcelButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            excelImportStatus.textContent = '';
+            excelProgressContainer.classList.add('hidden');
+            excelProgressBar.style.width = '0%';
+        });
+
+        uploadExcelButton.addEventListener('click', async () => {
+            const file = excelFileInput.files[0];
+            if (!file) {
+                displayError("Lütfen bir Excel dosyası seçin.");
+                return;
+            }
+            await handleFileUpload(file, excelImportStatus);
+        });
+
+        async function handleFileUpload(file, statusElement) {
+            if (!wordsCollectionRef) {
+                displayError("Firebase henüz başlatılmadı veya kullanıcı oturum açmadı. Lütfen bekleyin.");
+                return;
+            }
+
+            statusElement.className = 'text-sm mt-3 text-gray-600';
+            statusElement.textContent = 'Excel dosyası okunuyor...';
+            uploadExcelButton.disabled = true;
+            uploadExcelButton.classList.add('opacity-50', 'cursor-not-allowed');
+            excelProgressContainer.classList.remove('hidden');
+            excelProgressBar.style.width = '0%';
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    if (sheetData.length === 0) {
+                        const msg = "Excel dosyasında okunabilir veri bulunamadı.";
+                        statusElement.className = 'text-sm mt-3 text-red-600';
+                        statusElement.textContent = msg;
+                        return;
+                    }
+
+                    const headers = sheetData[0].map(h => String(h).replace(/\s+/g, '').toLowerCase());
+                    const italianColIndex = headers.indexOf('italyanca');
+                    const turkishColIndex = headers.indexOf('türkçe');
+                    const typeColIndex = headers.indexOf('tür') !== -1 ? headers.indexOf('tür') : headers.indexOf('category');
+
+                    if (italianColIndex === -1 || turkishColIndex === -1) {
+                        const msg = "Excel dosyasında 'İtalyanca' ve 'Türkçe' başlıklı sütunlar bulunamadı. Lütfen başlıklarınızı kontrol edin. Okunan başlıklar için tarayıcı konsolunu (F12) inceleyebilirsiniz.";
+                        statusElement.className = 'text-sm mt-3 text-red-600';
+                        statusElement.textContent = msg;
+                        return;
+                    }
+
+                    const wordsToProcess = [];
+                    let duplicatesFound = 0;
+                    for (let i = 1; i < sheetData.length; i++) {
+                        const row = sheetData[i];
+                        const italian = row[italianColIndex];
+                        const turkish = row[turkishColIndex];
+                        const type = typeColIndex !== -1 && row[typeColIndex] ? String(row[typeColIndex]).trim() : 'Genel';
+
+                        if (italian && turkish) {
+                            const trimmedItalian = String(italian).trim();
+                            const trimmedTurkish = String(turkish).trim();
+                            if (isWordDuplicate(trimmedItalian, trimmedTurkish)) {
+                                duplicatesFound++;
+                                console.warn(`Tekrarlayan kelime atlandı: ${trimmedItalian} - ${trimmedTurkish}`);
+                            } else {
+                                wordsToProcess.push({
+                                    italian: capitalizeFirstLetter(trimmedItalian, 'it-IT'),
+                                    turkish: capitalizeFirstLetter(trimmedTurkish, 'tr-TR'),
+                                    type: capitalizeFirstLetter(type, 'tr-TR'),
+                                    timestamp: new Date()
+                                });
+                            }
+                        }
+                    }
+
+                    if (wordsToProcess.length === 0 && duplicatesFound === sheetData.length - 1) {
+                        const msg = "Excel dosyasında eklenecek geçerli veya yeni kelime bulunamadı.";
+                        statusElement.className = 'text-sm mt-3 text-orange-600';
+                        statusElement.textContent = msg;
+                        return;
+                    }
+
+                    let addedCount = 0;
+                    const totalWords = wordsToProcess.length;
+
+                    for (const word of wordsToProcess) {
+                        await addDoc(wordsCollectionRef, word);
+                        addedCount++;
+                        const progress = Math.floor((addedCount / totalWords) * 100);
+                        statusElement.textContent = `Kelimeler ekleniyor... %${progress}`;
+                        excelProgressBar.style.width = `${progress}%`;
+                    }
+
+                    let successMessage = `${addedCount} kelime başarıyla yüklendi!`;
+                    if (duplicatesFound > 0) {
+                        successMessage += ` (${duplicatesFound} tekrar eden kelime atlandı.)`;
+                    }
+
+                    statusElement.className = 'text-sm mt-3 text-green-600';
+                    statusElement.textContent = successMessage;
+
+                    excelFileInput.value = '';
+                    fileNameDisplay.textContent = '';
+
+                } catch (error) {
+                    console.error("Excel dosyası işlenirken hata:", error);
+                    const msg = "Excel dosyası işlenirken bir hata oluştu: " + error.message;
+                    statusElement.className = 'text-sm mt-3 text-red-600';
+                    statusElement.textContent = msg;
+                } finally {
+                    uploadExcelButton.disabled = false;
+                    uploadExcelButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    excelProgressContainer.classList.add('hidden');
+                    excelProgressBar.style.width = '0%';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Yardımcı fonksiyon: İşlem butonlarını başlangıç durumuna getirir
+        function resetActionButtons() {
+            deleteSelectedWordsButton.disabled = false;
+            deleteSelectedWordsButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            removeDuplicatesButton.disabled = false;
+            removeDuplicatesButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            exportWordsButton.disabled = false;
+            exportWordsButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        // --- Seçilen Kelimeleri Silme İşlevi ---
+        deleteSelectedWordsButton.addEventListener('click', async () => {
+            console.log("Delete Selected Words button clicked.");
+
+            const selectedWordIds = Array.from(document.querySelectorAll('.word-checkbox:checked'))
+                                        .map(checkbox => checkbox.dataset.id);
+
+            if (selectedWordIds.length === 0) {
+                displayError("Lütfen silmek için en az bir kelime seçin.");
+                return;
+            }
+
+            deleteSelectedWordsButton.disabled = true;
+            deleteSelectedWordsButton.classList.add('opacity-50', 'cursor-not-allowed');
+            removeDuplicatesButton.disabled = true;
+            removeDuplicatesButton.classList.add('opacity-50', 'cursor-not-allowed');
+            exportWordsButton.disabled = true;
+            exportWordsButton.classList.add('opacity-50', 'cursor-not-allowed');
+
+            if (!userId) {
+                displayError("Kelimeleri silmek için giriş yapmış olmalısınız.");
+                resetActionButtons();
+                return;
+            }
+            if (!db) {
+                displayError("Veritabanı bağlantısı henüz hazır değil. Lütfen birkaç saniye bekleyip tekrar deneyin.");
+                resetActionButtons();
+                return;
+            }
+
+            showConfirmModal(
+                `${selectedWordIds.length} adet kelimeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!`,
+                async (confirmed) => {
+                    if (confirmed) {
+                        console.log("Attempting to delete selected words. IDs:", selectedWordIds);
+                        try {
+                            let deletedCount = 0;
+                            const totalToDelete = selectedWordIds.length;
+
+                            excelImportStatus.className = 'text-sm mt-3 text-gray-600';
+                            excelImportStatus.textContent = `Seçilen kelimeler siliniyor... %0`;
+                            excelProgressContainer.classList.remove('hidden');
+                            excelProgressBar.style.width = '0%';
+
+                            const BATCH_SIZE = 499;
+                            let batch = writeBatch(db);
+                            let batchCount = 0;
+
+                            for (const id of selectedWordIds) {
+                                batch.delete(doc(db, `users/${userId}/words`, id));
+                                deletedCount++;
+                                batchCount++;
+
+                                const progress = Math.floor((deletedCount / totalToDelete) * 100);
+                                excelImportStatus.textContent = `Seçilen kelimeler siliniyor... %${progress}`;
+                                excelProgressBar.style.width = `${progress}%`;
+
+                                if (batchCount === BATCH_SIZE) {
+                                    await batch.commit();
+                                    batch = writeBatch(db);
+                                    batchCount = 0;
+                                    console.log(`Batch commit ediliyor: ${deletedCount}/${totalToDelete} kelime silindi.`);
+                                }
+                            }
+
+                            if (batchCount > 0) {
+                                await batch.commit();
+                                console.log(`Son batch commit ediliyor: ${deletedCount}/${totalToDelete} kelime silindi.`);
+                            }
+
+                            excelImportStatus.className = 'text-sm mt-3 text-green-600';
+                            excelImportStatus.textContent = `${deletedCount} seçilen kelime başarıyla silindi!`;
+                            console.log(`${deletedCount} seçilen kelime başarıyla silindi.`);
+
+                        } catch (error) {
+                            console.error("Seçilen kelimeler silinirken hata oluştu: ", error);
+                            displayError("Seçilen kelimeler silinirken bir hata oluştu: " + error.message);
+                            excelImportStatus.className = 'text-sm mt-3 text-red-600';
+                            excelImportStatus.textContent = `Hata: ${error.message}`;
+                        } finally {
+                            resetActionButtons();
+                            excelProgressContainer.classList.add('hidden');
+                            excelProgressBar.style.width = '0%';
+                            setTimeout(() => {
+                                excelImportStatus.textContent = '';
+                            }, 3000);
+                        }
+                    } else {
+                        excelImportStatus.className = 'text-sm mt-3 text-gray-600';
+                        excelImportStatus.textContent = "Seçilen kelimeleri silme işlemi iptal edildi.";
+                        console.log("Seçilen kelimeleri silme işlemi iptal edildi (confirmation denied).");
+                        resetActionButtons();
+                        excelProgressContainer.classList.add('hidden');
+                        excelProgressBar.style.width = '0%';
+                        setTimeout(() => {
+                            excelImportStatus.textContent = '';
+                        }, 3000);
+                    }
+                }
+            );
+        });
+
+        // --- Tekrarlayan Kelimeleri Temizle İşlevi ---
+        removeDuplicatesButton.addEventListener('click', () => {
+            if (!userId) {
+                displayError("Tekrarlayan kelimeleri temizlemek için giriş yapmış olmalısınız.");
+                return;
+            }
+            if (!db) {
+                displayError("Veritabanı bağlantısı henüz hazır değil. Lütfen birkaç saniye bekleyip tekrar deneyin.");
+                return;
+            }
+            document.querySelector('input[name="duplicateCheckMode"][value="both"]').checked = true;
+            duplicateCheckMode = 'both';
+            showModal('duplicate-options-modal');
+        });
+
+        duplicateCheckModeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                duplicateCheckMode = event.target.value;
+            });
+        });
+
+        startDuplicateCheckButton.addEventListener('click', async () => {
+            closeModal('duplicate-options-modal');
+            await processDuplicateRemoval(duplicateCheckMode);
+        });
+
+        async function processDuplicateRemoval(mode) {
+            try {
+                const q = query(wordsCollectionRef);
+                const snapshot = await getDocs(q);
+
+                if (snapshot.empty) {
+                    excelImportStatus.className = 'text-sm mt-3 text-orange-600';
+                    excelImportStatus.textContent = "Veritabanında kelime bulunamadı.";
+                    return;
+                }
+
+                const uniqueWordsMap = new Map();
+                const duplicatesToDelete = [];
+                const duplicateDetailsForDisplay = [];
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    let normalizedKey = '';
+
+                    const normalizedItalian = (data.italian || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    const normalizedTurkish = (data.turkish || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+                    if (mode === 'italianOnly') {
+                        normalizedKey = normalizedItalian;
+                    } else if (mode === 'turkishOnly') {
+                        normalizedKey = normalizedTurkish;
+                    } else {
+                        normalizedKey = `${normalizedItalian}_${normalizedTurkish}`;
+                    }
+
+                    if (uniqueWordsMap.has(normalizedKey)) {
+                        duplicatesToDelete.push(doc.id);
+                        duplicateDetailsForDisplay.push(`${capitalizeFirstLetter(data.italian, 'it-IT')} - ${capitalizeFirstLetter(data.turkish, 'tr-TR')} (Tür: ${capitalizeFirstLetter(data.type || 'Belirtilmemiş', 'tr-TR')})`);
+                    } else {
+                        uniqueWordsMap.set(normalizedKey, doc);
+                    }
+                });
+
+                if (duplicatesToDelete.length === 0) {
+                    excelImportStatus.className = 'text-sm mt-3 text-green-600';
+                    excelImportStatus.textContent = "Tekrarlayan kelime bulunamadı.";
+                    return;
+                }
+
+                showConfirmModal(
+                    `Veritabanınızda ${duplicatesToDelete.length} adet tekrar eden kelime bulundu. Bu kelimeler kalıcı olarak silinecektir.`,
+                    async (confirmed) => {
+                        if (confirmed) {
+                            let deletedCount = 0;
+                            const totalToDelete = duplicatesToDelete.length;
+
+                            excelImportStatus.className = 'text-sm mt-3 text-gray-600';
+                            excelImportStatus.textContent = `Tekrarlayan kelimeler siliniyor... %0`;
+                            removeDuplicatesButton.disabled = true;
+                            removeDuplicatesButton.classList.add('opacity-50', 'cursor-not-allowed');
+                            deleteSelectedWordsButton.disabled = true;
+                            deleteSelectedWordsButton.classList.add('opacity-50', 'cursor-not-allowed');
+                            exportWordsButton.disabled = true;
+                            exportWordsButton.classList.add('opacity-50', 'cursor-not-allowed');
+                            excelProgressContainer.classList.remove('hidden');
+                            excelProgressBar.style.width = '0%';
+
+                            const BATCH_SIZE = 499;
+                            let batch = writeBatch(db);
+                            let batchCount = 0;
+
+                            for (const docId of duplicatesToDelete) {
+                                batch.delete(doc(db, `users/${userId}/words`, docId));
+                                deletedCount++;
+                                batchCount++;
+
+                                const progress = Math.floor((deletedCount / totalToDelete) * 100);
+                                excelImportStatus.textContent = `Tekrarlayan kelimeler siliniyor... %${progress}`;
+                                excelProgressBar.style.width = `${progress}%`;
+
+                                if (batchCount === BATCH_SIZE) {
+                                    await batch.commit();
+                                    batch = writeBatch(db);
+                                    batchCount = 0;
+                                    console.log(`Batch commit ediliyor: ${deletedCount}/${totalToDelete} kelime silindi.`);
+                                }
+                            }
+
+                            if (batchCount > 0) {
+                                await batch.commit();
+                                console.log(`Son batch commit ediliyor: ${deletedCount}/${totalToDelete} kelime silindi.`);
+                            }
+
+                            excelImportStatus.className = 'text-sm mt-3 text-green-600';
+                            excelImportStatus.textContent = `${deletedCount} tekrarlayan kelime başarıyla silindi!`;
+                            console.log(`${deletedCount} tekrarlayan kelime başarıyla silindi.`);
+
+                        } else {
+                            excelImportStatus.className = 'text-sm mt-3 text-gray-600';
+                            excelImportStatus.textContent = "Tekrarlayan kelime silme işlemi iptal edildi.";
+                        }
+                    },
+                    "Tekrarlayan Kelimeleri Silme Onayı",
+                    duplicateDetailsForDisplay
+                );
+
+            } catch (error) {
+                console.error("Tekrarlayan kelimeler silinirken hata oluştu: ", error);
+                displayError("Tekrarlayan kelimeler silinirken bir hata oluştu: " + error.message);
+            } finally {
+                removeDuplicatesButton.disabled = false;
+                removeDuplicatesButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                deleteSelectedWordsButton.disabled = false;
+                deleteSelectedWordsButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                exportWordsButton.disabled = false;
+                exportWordsButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                excelProgressContainer.classList.add('hidden');
+                excelProgressBar.style.width = '0%';
+            }
+        }
+
+        // --- Kelimeleri Dışa Aktar İşlevi ---
+        exportWordsButton.addEventListener('click', async () => {
+            if (!userId) {
+                displayError("Kelimeleri dışa aktarmak için giriş yapmış olmalısınız.");
+                return;
+            }
+            if (allWords.length === 0) {
+                displayError("Dışa aktarılacak kelime bulunamadı.");
+                return;
+            }
+
+            excelImportStatus.className = 'text-sm mt-3 text-gray-600';
+            excelImportStatus.textContent = 'Kelimeler Excel dosyasına hazırlanıyor...';
+            exportWordsButton.disabled = true;
+            exportWordsButton.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                const dataForExport = allWords.map(word => ({
+                    'İtalyanca': word.italian,
+                    'Türkçe': word.turkish,
+                    'Tür': word.type || 'Genel'
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(dataForExport);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Kelimeler");
+
+                XLSX.writeFile(workbook, "kelimelerim.xlsx");
+
+                excelImportStatus.className = 'text-sm mt-3 text-green-600';
+                excelImportStatus.textContent = 'Kelimeler başarıyla dışa aktarıldı!';
+            } catch (error) {
+                console.error("Kelimeler dışa aktarılırken hata oluştu: ", error);
+                displayError("Kelimeler dışa aktarılırken bir hata oluştu: " + error.message);
+            } finally {
+                exportWordsButton.disabled = false;
+                exportWordsButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        });
+
+        // Tema butonuna olay dinleyici ekle
+        if (themeToggleButton) {
+            themeToggleButton.addEventListener('click', toggleTheme);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // shared.js zaten temayı başlatıyor ve butonu güncelliyor.
+        });
+    </script>
+</body>
+</html>
