@@ -8,13 +8,108 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS Değişkenleri ve Tema Ayarları */
+        :root {
+            --bg-color: #f0f4f8;
+            --container-bg: #ffffff;
+            --text-color-dark: #1f2937; /* gray-800 */
+            --text-color-medium: #4b5563; /* gray-700 */
+            --text-color-light: #6b7280; /* gray-600 */
+            --border-color: #e5e7eb; /* gray-200 */
+            --input-border: #d1d5db; /* gray-300 */
+            --input-focus-border: #3b82f6; /* blue-500 */
+            --blue-50-bg: #eff6ff; /* blue-50 */
+            --yellow-50-bg: #fffbeb; /* yellow-50 */
+            --red-100-bg: #fee2e2; /* red-100 */
+            --red-700-text: #b91c1c; /* red-700 */
+            --blue-100-bg: #dbeafe; /* blue-100 */
+            --blue-500-border: #3b82f6; /* blue-500 */
+            --blue-700-text: #1d4ed8; /* blue-700 */
+            --green-600-text: #16a34a; /* green-600 */
+            --red-600-text: #dc2626; /* red-600 */
+            --yellow-600-text: #eab308; /* yellow-600 */
+            --purple-500-bg: #a855f7; /* purple-500 */
+            --purple-700-bg: #7e22ce; /* purple-700 */
+            --green-500-bg: #22c55e; /* green-500 */
+            --green-700-bg: #15803d; /* green-700 */
+            --gray-200-bg: #e5e7eb; /* gray-200 */
+            --gray-300-bg: #d1d5db; /* gray-300 */
+            --gray-800-text: #1f2937; /* gray-800 */
+            --gray-100-bg: #f3f4f6; /* gray-100 */
+            --gray-500-text: #6b7280; /* gray-500 */
+            --gray-50-bg: #f9fafb; /* gray-50 */
+            --blue-600-text: #2563eb; /* blue-600 */
+        }
+
+        .dark {
+            --bg-color: #1a202c; /* dark gray */
+            --container-bg: #2d3748; /* darker gray */
+            --text-color-dark: #e2e8f0; /* light gray */
+            --text-color-medium: #cbd5e0; /* lighter gray */
+            --text-color-light: #a0aec0; /* even lighter gray */
+            --border-color: #4a5568; /* dark border */
+            --input-border: #4a5568;
+            --input-focus-border: #63b3ed; /* light blue */
+            --blue-50-bg: #2a4365; /* darker blue */
+            --yellow-50-bg: #433e2e; /* darker yellow */
+            --red-100-bg: #4a2d2d; /* darker red */
+            --red-700-text: #ef4444; /* brighter red */
+            --blue-100-bg: #2a4365;
+            --blue-500-border: #63b3ed;
+            --blue-700-text: #90cdf4;
+            --green-600-text: #68d391;
+            --red-600-text: #fc8181;
+            --yellow-600-text: #f6e05e;
+            --purple-500-bg: #9f7aea;
+            --purple-700-bg: #b794f4;
+            --green-500-bg: #48bb78;
+            --green-700-bg: #68d391;
+            --gray-200-bg: #4a5568;
+            --gray-300-bg: #6b7280;
+            --gray-800-text: #e2e8f0;
+            --gray-100-bg: #2d3748;
+            --gray-500-text: #a0aec0;
+            --gray-50-bg: #2d3748;
+            --blue-600-text: #63b3ed;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Açık gri arka plan */
+            background-color: var(--bg-color);
+            color: var(--text-color-dark);
         }
         .container {
-            max-width: 900px; /* Genişletilmiş konteyner */
+            background-color: var(--container-bg);
         }
+        .text-gray-800 { color: var(--text-color-dark); }
+        .text-gray-700 { color: var(--text-color-medium); }
+        .text-gray-600 { color: var(--text-color-light); }
+        .border-gray-200 { border-color: var(--border-color); }
+        .border-gray-300 { border-color: var(--input-border); }
+        .focus\:border-blue-500:focus { border-color: var(--input-focus-border); }
+        .bg-blue-50 { background-color: var(--blue-50-bg); }
+        .bg-yellow-50 { background-color: var(--yellow-50-bg); }
+        .bg-red-100 { background-color: var(--red-100-bg); }
+        .text-red-700 { color: var(--red-700-text); }
+        .bg-blue-100 { background-color: var(--blue-100-bg); }
+        .border-blue-500 { border-color: var(--blue-500-border); }
+        .text-blue-700 { color: var(--blue-700-text); }
+        .text-green-600 { color: var(--green-600-text); }
+        .text-red-600 { color: var(--red-600-text); }
+        .text-yellow-600 { color: var(--yellow-600-text); }
+        .bg-purple-500 { background-color: var(--purple-500-bg); }
+        .hover\:bg-purple-700:hover { background-color: var(--purple-700-bg); }
+        .bg-green-500 { background-color: var(--green-500-bg); }
+        .hover\:bg-green-700:hover { background-color: var(--green-700-bg); }
+        .bg-gray-200 { background-color: var(--gray-200-bg); }
+        .hover\:bg-gray-300:hover { background-color: var(--gray-300-bg); }
+        .text-gray-800 { color: var(--gray-800-text); }
+        .bg-gray-100 { background-color: var(--gray-100-bg); }
+        .text-gray-500 { color: var(--gray-500-text); }
+        .bg-gray-50 { background-color: var(--gray-50-bg); }
+        .text-blue-600 { color: var(--blue-600-text); }
+
+        /* Diğer Stil Kuralları */
         .button-primary {
             background-image: linear-gradient(to right, #6EE7B7, #34D399, #10B981);
             transition: all 0.2s ease-in-out;
@@ -26,51 +121,15 @@
             transform: translateY(-2px);
         }
         .button-secondary {
-            background-color: #E2E8F0;
-            color: #4A5568;
+            background-color: var(--gray-200-bg);
+            color: var(--text-color-medium);
             transition: all 0.2s ease-in-out;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         .button-secondary:hover {
-            background-color: #CBD5E0;
+            background-color: var(--gray-300-bg);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transform: translateY(-1px);
-        }
-        /* Modal Stilleri (Tüm sayfalarda ortak olacak) */
-        .modal {
-            display: none; /* Varsayılan olarak gizli */
-            position: fixed; /* Ekranı kapla */
-            z-index: 1000; /* Diğer her şeyin üzerinde */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; /* İçerik taşarsa kaydırma */
-            background-color: rgba(0,0,0,0.4); /* Yarı şeffaf siyah arka plan */
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 2.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            max-width: 90%;
-            width: 400px;
-            text-align: center;
-        }
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: #000;
-            text-decoration: none;
         }
     </style>
 </head>
@@ -86,6 +145,11 @@
             <span id="user-display-text">Yükleniyor...</span>
             <button id="sign-out-button" class="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 text-xs hidden">Çıkış Yap</button>
         </div>
+
+        <!-- Tema Değiştirme Butonu -->
+        <button id="theme-toggle" class="absolute top-4 right-28 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-3 rounded-full text-sm shadow-md transition duration-200 ease-in-out z-50" title="Temayı Değiştir">
+            <!-- SVG icon JS tarafından yüklenecek -->
+        </button>
 
         <h1 class="text-4xl font-bold text-gray-800 mb-4 text-center">Kelime Oyunu Modları</h1>
 
@@ -158,17 +222,18 @@
     </div>
 
     <script type="module">
-        import { auth, db, userId, wordsCollectionRef, onSnapshot, query, capitalizeFirstLetter, showModal, closeModal, displayError, showConfirmModal, signOut } from './shared.js';
+        import { auth, db, userId, wordsCollectionRef, onSnapshot, query, capitalizeFirstLetter, showModal, closeModal, displayError, showConfirmModal, signOut, setTheme, toggleTheme } from './shared.js';
 
         // UI Elementleri
         const signOutButton = document.getElementById('sign-out-button');
         const numWordsInput = document.getElementById('num-words-input');
         const wordCountError = document.getElementById('word-count-error');
         const gameDirectionRadios = document.querySelectorAll('input[name="gameDirection"]');
-        const categorySelect = document.getElementById('category-select'); // Yeni: Select kutusu
+        const categorySelect = document.getElementById('category-select'); // Select kutusu
         const startTahminButton = document.getElementById('start-tahmin-button');
         const startSecmeliButton = document.getElementById('start-secmeli-button');
         const startDogruYanlisButton = document.getElementById('start-dogru-yanlis-button');
+        const themeToggleButton = document.getElementById('theme-toggle'); // Tema butonu
 
         let allWords = []; // Tüm kelimeler burada saklanacak
         let allCategories = new Set(); // Veritabanındaki tüm benzersiz kelime türleri
@@ -179,6 +244,8 @@
         window.closeModal = closeModal;
         window.displayError = displayError;
         window.showConfirmModal = showConfirmModal;
+        window.setTheme = setTheme;
+        window.toggleTheme = toggleTheme;
 
         // --- Çıkış Yapma ---
         signOutButton.addEventListener('click', async () => {
@@ -207,12 +274,11 @@
                 return;
             }
 
-            // wordsCollectionRef shared.js tarafından ayarlanır
             onSnapshot(query(wordsCollectionRef), (snapshot) => {
                 console.log("Firestore snapshot received in game_modes.html. Updating word list.");
                 const wordsFromDb = [];
                 allCategories.clear();
-                allCategories.add('Tümü'); // "Tümü" seçeneğini her zaman ekle
+                allCategories.add('Tümü');
 
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -222,7 +288,7 @@
                     }
                 });
                 allWords = wordsFromDb.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
-                renderCategorySelection(); // Kategorileri yeniden render et
+                renderCategorySelection();
                 updateStartButtonsState();
                 console.log("Firebase'den kelimeler güncellendi (game_modes.html):", allWords.length);
             }, (error) => {
@@ -245,7 +311,7 @@
                 allWords = [];
                 allCategories.clear();
                 allCategories.add('Tümü');
-                selectedCategories = ['Tümü']; // Kullanıcı çıkış yaptığında seçimi sıfırla
+                selectedCategories = ['Tümü'];
                 renderCategorySelection();
                 updateStartButtonsState();
             }
@@ -257,7 +323,6 @@
             const requestedCount = parseInt(numWordsInput.value, 10);
             const isValidNumber = !isNaN(requestedCount) && requestedCount > 0;
 
-            // Seçili kategorilere göre filtrelenmiş kelime sayısını al
             const filteredWordsCount = getFilteredWords().length;
             const hasEnoughWords = filteredWordsCount >= requestedCount;
 
@@ -315,7 +380,7 @@
             // Dinamik kategorileri ekle
             const sortedCategories = Array.from(allCategories).sort((a, b) => a.localeCompare(b, 'tr-TR'));
             sortedCategories.forEach(category => {
-                if (category === 'Tümü') return; // "Tümü" zaten eklendi
+                if (category === 'Tümü') return;
 
                 const option = document.createElement('option');
                 option.value = category;
@@ -334,19 +399,16 @@
             const currentSelections = Array.from(categorySelect.selectedOptions).map(option => option.value);
 
             if (currentSelections.includes('Tümü')) {
-                // Eğer "Tümü" seçildiyse, sadece "Tümü" kalsın ve diğerlerini kaldır
                 selectedCategories = ['Tümü'];
                 Array.from(categorySelect.options).forEach(option => {
                     option.selected = (option.value === 'Tümü');
                 });
             } else if (currentSelections.length === 0 && allCategories.size > 0) {
-                // Eğer hiçbir şey seçili değilse (ve kategori varsa), "Tümü"nü otomatik seç
                 selectedCategories = ['Tümü'];
                 Array.from(categorySelect.options).forEach(option => {
                     option.selected = (option.value === 'Tümü');
                 });
             } else {
-                // Diğer durumlarda, seçilenleri güncelle
                 selectedCategories = currentSelections;
             }
             updateStartButtonsState();
@@ -358,14 +420,17 @@
         numWordsInput.addEventListener('blur', updateStartButtonsState);
         gameDirectionRadios.forEach(radio => radio.addEventListener('change', updateStartButtonsState));
 
+        // Tema butonuna olay dinleyici ekle
+        if (themeToggleButton) {
+            themeToggleButton.addEventListener('click', toggleTheme);
+        }
 
         // Oyun modlarına yönlendirme fonksiyonu
         function navigateToGame(gameType) {
             const numWords = numWordsInput.value;
             const gameDirection = document.querySelector('input[name="gameDirection"]:checked').value;
-            const categories = selectedCategories.join(','); // Kategorileri virgülle ayırarak string yap
+            const categories = selectedCategories.join(',');
 
-            // URLSearchParams kullanarak parametreleri oluştur
             const params = new URLSearchParams({
                 numWords: numWords,
                 gameDirection: gameDirection,
@@ -380,11 +445,8 @@
         startSecmeliButton.addEventListener('click', () => navigateToGame('secmeli_oyunu'));
         startDogruYanlisButton.addEventListener('click', () => navigateToGame('dogru_yanlis_oyunu'));
 
-        // Sayfa yüklendiğinde ilk durumu ayarla
         document.addEventListener('DOMContentLoaded', () => {
-            // shared.js'deki onAuthStateChanged tetiklendiğinde kelimeler yüklenecek ve
-            // ardından renderCategorySelection ve updateStartButtonsState çağrılacak.
-            // Bu kısım boş kalabilir.
+            // shared.js zaten temayı başlatıyor ve butonu güncelliyor.
         });
 
     </script>
