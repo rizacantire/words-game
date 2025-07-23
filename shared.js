@@ -9,7 +9,8 @@ import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc
 
 // KENDİ FIREBASE YAPILANDIRMANIZ BURADA
 // Lütfen Firebase konsolunuzdan aldığınız kendi yapılandırma kodunuzu buraya yapıştırın.
-const firebaseConfig = {
+// çoklu chatgpt den istenen en çok kullanılan 500 kelime
+/*const firebaseConfig = {
     apiKey: "AIzaSyBX99YL08HxGPqywBBuELGeSFaQ7aqHsdE",
     authDomain: "italyanca-sozluk.firebaseapp.com",
     projectId: "italyanca-sozluk",
@@ -18,7 +19,19 @@ const firebaseConfig = {
     appId: "1:773584885746:web:7bfaf9c406bb72a38a3d6b",
     measurementId: "G-K9J3K1HNQ4"
 };
+*/
 
+// duolingo ile öğrenmeye başladığım kendi kelimelerimin veri tabanı kodu
+const firebaseConfig = {
+  apiKey: "AIzaSyAIrGvfNYjBP3omXhiXJld7IYkFzkszKOU",
+  authDomain: "italyanca-2740a.firebaseapp.com",
+  databaseURL: "https://italyanca-2740a-default-rtdb.firebaseio.com",
+  projectId: "italyanca-2740a",
+  storageBucket: "italyanca-2740a.firebasestorage.app",
+  messagingSenderId: "877770240594",
+  appId: "1:877770240594:web:e20666cc1dbc335822658b",
+  measurementId: "G-8GBGT2SNQR"
+};
 // Firebase Uygulamasını Başlat
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app); // Analytics başlatıldı
