@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İtalyanca-Türkçe Kelime Oyunu</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Açık gri arka plan */
+        }
+        .container {
+            max-width: 900px; /* Genişletilmiş konteyner */
+        }
+        .button-primary {
+            background-image: linear-gradient(to right, #6EE7B7, #34D399, #10B981);
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .button-primary:hover {
+            background-image: linear-gradient(to right, #34D399, #10B981, #059669);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .button-secondary {
+            background-color: #E2E8F0;
+            color: #4A5568;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .button-secondary:hover {
+            background-color: #CBD5E0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        /* Google Giriş Butonu Stili */
+        .google-signin-button {
+            background-color: #4285F4; /* Google Blue */
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: background-color 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 320px; /* Daha dar bir genişlik */
+        }
+        .google-signin-button:hover {
+            background-color: #357ae8;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .google-icon {
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+        .google-icon img {
+            width: 100%;
+            height: 100%;
+        }
+        /* Modal Stilleri (Tüm sayfalarda ortak olacak) */
+        .modal {
+            display: none; /* Varsayılan olarak gizli */
+            position: fixed; /* Ekranı kapla */
+            z-index: 1000; /* Diğer her şeyin üzerinde */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* İçerik taşarsa kaydırma */
+            background-color: rgba(0,0,0,0.4); /* Yarı şeffaf siyah arka plan */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #000;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="container bg-white p-8 rounded-xl shadow-lg flex flex-col items-center gap-6 relative">
+        <!-- Kullanıcı Bilgisi ve Çıkış Butonu (Tüm sayfalarda ortak) -->
+        <div id="user-info-display" class="absolute top-4 right-4 text-xs text-gray-600 bg-gray-100 px-3 py-1 rounded-md shadow-sm flex items-center gap-2">
+            <span id="user-display-text">Yükleniyor...</span>
+            <button id="sign-out-button" class="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 text-xs hidden">Çıkış Yap</button>
+        </div>
+
+        <h1 class="text-4xl font-bold text-gray-800 mb-4 text-center">İtalyanca-Türkçe Kelime Oyunu</h1>
+
+        <!-- Ana Menü / Mod Seçimi -->
+        <div id="main-menu" class="w-full flex flex-col items-center justify-center gap-6 p-6">
+            <button id="google-signin-button" class="google-signin-button">
+                <span class="google-icon">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_Google__G__Nouvelle_version.svg" alt="Google Logo">
+                </span>
+                Google ile Giriş Yap
+            </button>
+            <a href="game_modes.html" id="start-game-mode-button" class="button-primary px-10 py-5 text-white font-bold rounded-xl text-2xl w-full max-w-sm hidden flex items-center justify-center">Kelime Oyunu Oyna</a>
+            <a href="manage_words.html" id="manage-words-mode-button" class="button-secondary px-10 py-5 text-gray-800 font-bold rounded-xl text-2xl w-full max-w-sm hidden flex items-center justify-center">Kelimeleri Yönet</a>
+
+            <!-- Bilgilendirme Kutusu -->
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg mt-6 w-full max-w-lg" role="alert">
+                <p class="font-bold">Önemli Bilgilendirme:</p>
+                <p class="text-sm">Uygulama verilerinizi kaydetmek için Firebase kullanır. Google ile giriş yaparak, kelimelerinize her yerden (farklı tarayıcılar veya cihazlar) erişebilirsiniz.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modallar (Tüm sayfalarda ortak olarak bulunmalı) -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="window.closeModal('error-modal')">&times;</span>
+            <h2 class="text-3xl font-bold text-red-600 mb-4">Hata! 🚨</h2>
+            <p id="error-message" class="text-lg text-gray-700 mb-6"></p>
+            <button class="button-secondary px-6 py-3 text-gray-800 font-bold rounded-xl text-lg" onclick="window.closeModal('error-modal')">Tamam</button>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="confirm-modal-title">Onay Gerekli</h2>
+            <p id="confirm-message" class="text-lg text-gray-700 mb-6"></p>
+            <div id="confirm-details-list" class="text-left text-gray-700 mb-6 max-h-48 overflow-y-auto hidden">
+                <!-- Detaylar buraya yüklenecek -->
+            </div>
+            <div class="flex justify-center gap-4">
+                <button id="confirm-yes-button" class="button-primary px-6 py-3 text-white font-bold rounded-lg">Evet</button>
+                <button id="confirm-no-button" class="button-secondary px-6 py-3 text-gray-800 font-bold rounded-lg">Hayır</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // shared.js dosyasından gerekli fonksiyonları ve değişkenleri import et
+        import { auth, GoogleAuthProvider, signInWithPopup, signOut, showConfirmModal, displayError } from './shared.js';
+
+        // UI Elementleri
+        const googleSigninButton = document.getElementById('google-signin-button');
+        const signOutButton = document.getElementById('sign-out-button');
+
+        // --- Google ile Giriş Yapma ---
+        googleSigninButton.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+                // onAuthStateChanged shared.js içinde olduğu için burada ek bir işlem yapmaya gerek yok
+                // Buton görünürlüğü shared.js tarafından yönetilecek
+            } catch (error) {
+                console.error("Google ile giriş hatası:", error);
+                displayError("Google ile giriş yapılırken bir hata oluştu: " + error.message);
+            }
+        });
+
+        // --- Çıkış Yapma ---
+        signOutButton.addEventListener('click', async () => {
+            showConfirmModal("Oturumu kapatmak istediğinizden emin misiniz?", async (confirmed) => {
+                if (confirmed) {
+                    try {
+                        await signOut(auth);
+                        console.log("Oturum kapatıldı.");
+                        // Buton görünürlüğü shared.js tarafından yönetilecek
+                    } catch (error) {
+                        console.error("Çıkış yapma hatası:", error);
+                        displayError("Çıkış yapılırken bir hata oluştu: " + error.message);
+                    }
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde shared.js'deki onAuthStateChanged dinleyicisinin çalışması için
+        // DOMContentLoaded olayını dinlemeye gerek yok, shared.js zaten kendi başına çalışacak.
+        // Ancak, modalsız sayfalarda showModal/closeModal gibi fonksiyonları kullanabilmek için
+        // window objesine ekleyelim (shared.js'de zaten export edilmişlerdi, burada window. ile erişebiliriz)
+        import { showModal, closeModal } from './shared.js';
+        window.showModal = showModal;
+        window.closeModal = closeModal;
+        window.displayError = displayError; // Hata modalını kullanabilmek için
+        window.showConfirmModal = showConfirmModal; // Onay modalını kullanabilmek için
+    </script>
+</body>
+</html>
